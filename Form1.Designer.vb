@@ -24,11 +24,11 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(Form1))
         dgv = New DataGridView()
-        ToolStrip1 = New ToolStrip()
+        tsp = New ToolStrip()
         btnADD = New ToolStripButton()
-        ToolStripButton1 = New ToolStripButton()
+        btnSave = New ToolStripButton()
         CType(dgv, ComponentModel.ISupportInitialize).BeginInit()
-        ToolStrip1.SuspendLayout()
+        tsp.SuspendLayout()
         SuspendLayout()
         ' 
         ' dgv
@@ -42,14 +42,14 @@ Partial Class Form1
         dgv.Size = New Size(800, 425)
         dgv.TabIndex = 0
         ' 
-        ' ToolStrip1
+        ' tsp
         ' 
-        ToolStrip1.Items.AddRange(New ToolStripItem() {btnADD, ToolStripButton1})
-        ToolStrip1.Location = New Point(0, 0)
-        ToolStrip1.Name = "ToolStrip1"
-        ToolStrip1.Size = New Size(800, 25)
-        ToolStrip1.TabIndex = 1
-        ToolStrip1.Text = "ToolStrip1"
+        tsp.Items.AddRange(New ToolStripItem() {btnADD, btnSave})
+        tsp.Location = New Point(0, 0)
+        tsp.Name = "tsp"
+        tsp.Size = New Size(800, 25)
+        tsp.TabIndex = 1
+        tsp.Text = "ToolStrip1"
         ' 
         ' btnADD
         ' 
@@ -58,16 +58,16 @@ Partial Class Form1
         btnADD.ImageTransparentColor = Color.Magenta
         btnADD.Name = "btnADD"
         btnADD.Size = New Size(23, 22)
-        btnADD.Text = "ToolStripButton1"
+        btnADD.Text = "ADD"
         ' 
-        ' ToolStripButton1
+        ' btnSave
         ' 
-        ToolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), Image)
-        ToolStripButton1.ImageTransparentColor = Color.Magenta
-        ToolStripButton1.Name = "ToolStripButton1"
-        ToolStripButton1.Size = New Size(23, 22)
-        ToolStripButton1.Text = "ToolStripButton1"
+        btnSave.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnSave.Image = CType(resources.GetObject("btnSave.Image"), Image)
+        btnSave.ImageTransparentColor = Color.Magenta
+        btnSave.Name = "btnSave"
+        btnSave.Size = New Size(23, 22)
+        btnSave.Text = "ToolStripButton1"
         ' 
         ' Form1
         ' 
@@ -75,18 +75,18 @@ Partial Class Form1
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(800, 450)
         Controls.Add(dgv)
-        Controls.Add(ToolStrip1)
+        Controls.Add(tsp)
         Name = "Form1"
         Text = "Form1"
         CType(dgv, ComponentModel.ISupportInitialize).EndInit()
-        ToolStrip1.ResumeLayout(False)
-        ToolStrip1.PerformLayout()
+        tsp.ResumeLayout(False)
+        tsp.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
 
     Friend WithEvents dgv As DataGridView
-    Friend WithEvents ToolStrip1 As ToolStrip
+    Friend WithEvents tsp As ToolStrip
     Friend WithEvents btnADD As ToolStripButton
-    Friend WithEvents ToolStripButton1 As ToolStripButton
+    Friend WithEvents btnSave As ToolStripButton
 End Class
