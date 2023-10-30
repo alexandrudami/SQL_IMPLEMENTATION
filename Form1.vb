@@ -10,16 +10,16 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
+        SelectDistinctValues()
+        'Dim SQLCMM As New SQLCOMMANDS
 
-        Dim SQLCMM As New SQLCOMMANDS
+        'SQLCMM.SQLSELECT(dt, cmmSelect)
 
-        SQLCMM.SQLSELECT(dt, cmmSelect)
+        'dgv.DataSource = dt
 
-        dgv.DataSource = dt
-
-        dgv.Columns("JudID").Visible = False
-        dgv.Columns("PersID").Visible = False
-        dgv.Columns("Judet").ReadOnly = True
+        'dgv.Columns("JudID").Visible = False
+        'dgv.Columns("PersID").Visible = False
+        'dgv.Columns("Judet").ReadOnly = True
 
     End Sub
 
@@ -45,6 +45,22 @@ Public Class Form1
         For Each dr In drModif
 
             sqlcmm.SQLUPDATE(dr("PersID"), dr("Nume"), dr("JudID"))
+
+        Next
+
+        sqlcmm.SQLSELECT(dt, cmmSelect)
+
+    End Sub
+
+
+    Private Sub btnDELETE_Click(sender As Object, e As EventArgs) Handles btnDELETE.Click
+
+        Dim row As DataGridViewRow
+        Dim sqlcmm As New SQLCOMMANDS
+
+        For Each row In dgv.SelectedRows
+
+            sqlcmm.SQLDELETE(dgv.Item("PersID", row.Index).Value)
 
         Next
 
@@ -94,6 +110,61 @@ Public Class Form1
 
     End Sub
 
+
+    Private Sub SelectDistinctValues()
+        Dim dtTree As New DataTable
+        Dim cmm As String = "Select distinct countryID, Country from Names inner Join Countries on Names.countryid = countries.ID"
+        Dim conn As New SqlConnection
+        Dim adapter As New SqlDataAdapter
+        Dim sqlcmm As New SQLCOMMANDS
+        sqlcmm.SQLCONN(conn)
+        Using conn
+            conn.Open()
+            adapter.SelectCommand = New SqlCommand(cmm, conn)
+            adapter.Fill(dtTree)
+        End Using
+
+        For Each row As DataRow In dtTree.Rows
+
+            trv.Nodes.Add(row("Country"))
+
+        Next
+
+        Dim trvParent As TreeNode
+
+        For Each trvParent In trv.Nodes
+
+
+            If trvParent.Level = 0 Then
+
+                cmm = "Select City, CountryID, Country from Cities inner join Countries on Cities.CountryID = Countries.ID where country ='" & trvParent.Text & "'"
+                Dim dtChildNode As New DataTable
+                conn = New SqlConnection
+                sqlcmm.SQLCONN(conn)
+                Using conn
+                    conn.Open()
+                    adapter.SelectCommand = New SqlCommand(cmm, conn)
+                    adapter.Fill(dtChildNode)
+                End Using
+
+                For Each row As DataRow In dtChildNode.Rows
+                    trvParent.Nodes.Add(row("City"))
+                Next
+
+
+            End If
+
+        Next
+
+
+
+
+
+
+
+    End Sub
+
+
 End Class
 
 
@@ -102,7 +173,7 @@ Public Class SQLCOMMANDS
 
 
 
-    Dim cnn As String = "Data Source=ALEX-PC\SQLEXPRESS01;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+    Dim cnn As String = "Data Source=ALEX\SQLEXPRESS;Initial Catalog=Temp;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
     Dim adapter As SqlDataAdapter
 
     Public Sub SQLCONN(ByRef conn As SqlConnection)
@@ -161,5 +232,24 @@ Public Class SQLCOMMANDS
         End Using
 
     End Sub
+
+    Public Sub SQLDELETE(ByVal id As String)
+
+        Dim cmm As String = "Delete from Persoane Where PersID=" & id
+        adapter = New SqlDataAdapter
+        Dim conn As New SqlConnection
+
+        SQLCONN(conn)
+
+        Using conn
+            conn.Open()
+            adapter.DeleteCommand = New SqlCommand(cmm, conn)
+            adapter.DeleteCommand.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+
 
 End Class
