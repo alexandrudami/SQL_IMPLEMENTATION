@@ -1,6 +1,7 @@
 ﻿
 
 
+Imports System.CodeDom
 Imports System.Windows.Markup
 Imports Microsoft.Data.SqlClient
 
@@ -10,7 +11,11 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        SelectDistinctValues()
+
+        Dim dtr As New DataTree
+
+        dtr.populateTree(trv)
+
         'Dim SQLCMM As New SQLCOMMANDS
 
         'SQLCMM.SQLSELECT(dt, cmmSelect)
@@ -134,7 +139,6 @@ Public Class Form1
 
         For Each trvParent In trv.Nodes
 
-
             If trvParent.Level = 0 Then
 
                 cmm = "Select City, CountryID, Country from Cities inner join Countries on Cities.CountryID = Countries.ID where country ='" & trvParent.Text & "'"
@@ -151,15 +155,9 @@ Public Class Form1
                     trvParent.Nodes.Add(row("City"))
                 Next
 
-
             End If
 
         Next
-
-
-
-
-
 
 
     End Sub
@@ -173,7 +171,7 @@ Public Class SQLCOMMANDS
 
 
 
-    Dim cnn As String = "Data Source=ALEX\SQLEXPRESS;Initial Catalog=Temp;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+    Dim cnn As String = "Data Source=ALEX-PC\SQLEXPRESS01;Initial Catalog=TEMP;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
     Dim adapter As SqlDataAdapter
 
     Public Sub SQLCONN(ByRef conn As SqlConnection)
@@ -248,6 +246,65 @@ Public Class SQLCOMMANDS
         End Using
 
     End Sub
+
+
+
+
+End Class
+
+
+
+
+Public Class DataTree
+
+
+    Public Sub populateTree(ByRef trv As TreeView)
+
+        Dim trn As TreeNode
+        Dim dtTree As New DataTable
+        Dim sqlcmm As New SQLCOMMANDS
+        sqlcmm.SQLSELECT(dtTree, "Select * from Users")
+
+        For Each dr As DataRow In dtTree.Rows
+
+            If dr("NodeLevel") = 0 Then
+                trn = New TreeNode
+                trn.Text = dr("Name")
+                trn.Name = dr("ID")
+                trv.Nodes.Add(trn)
+
+            Else
+
+                For Each node As TreeNode In trv.Nodes
+
+                    If node.Name = dr("IDParent") Then
+                        trn = New TreeNode
+                        trn.Text = dr("Name")
+                        trn.Name = dr("ID")
+                        node.Nodes.Add(trn)
+
+                    End If
+                Next
+
+            End If
+
+
+        Next
+
+
+
+    End Sub
+
+    Private Sub addNode()
+
+
+
+
+
+
+    End Sub
+
+
 
 
 
