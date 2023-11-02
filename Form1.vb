@@ -277,11 +277,7 @@ Public Class DataTree
 
                 For Each node As TreeNode In trv.Nodes
 
-                    If node.Name = dr("IDParent") Then
-                        trn = New TreeNode
-                        trn.Text = dr("Name")
-                        trn.Name = dr("ID")
-                        node.Nodes.Add(trn)
+            Next
 
                     End If
                 Next
