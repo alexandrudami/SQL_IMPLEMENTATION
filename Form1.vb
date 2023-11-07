@@ -2,29 +2,30 @@
 
 
 Imports System.CodeDom
+Imports System.Drawing.Imaging
+Imports System.Security.AccessControl
 Imports System.Windows.Markup
 Imports Microsoft.Data.SqlClient
+Imports SQL_IMPLEMENTATION.My
 
 Public Class Form1
     Dim dt As New DataTable
     Dim cmmSelect As String = "Select PersID, Nume, JudID, Judet from Persoane Left Join Judete ON Persoane.JudID = Judete.ID"
-
+    Dim cnn As String
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
 
         Dim dtr As New DataTree
+        If cnn IsNot Nothing Then
+            dtr.populateTree(trv)
+        End If
 
-        dtr.populateTree(trv)
 
-        'Dim SQLCMM As New SQLCOMMANDS
 
-        'SQLCMM.SQLSELECT(dt, cmmSelect)
 
-        'dgv.DataSource = dt
 
-        'dgv.Columns("JudID").Visible = False
-        'dgv.Columns("PersID").Visible = False
-        'dgv.Columns("Judet").ReadOnly = True
+
+
 
     End Sub
 
@@ -115,77 +116,128 @@ Public Class Form1
 
     End Sub
 
+    Public Function getConnectionString()
+        Return cnn
+    End Function
 
-    Private Sub SelectDistinctValues()
-        Dim dtTree As New DataTable
-        Dim cmm As String = "Select distinct countryID, Country from Names inner Join Countries on Names.countryid = countries.ID"
-        Dim conn As New SqlConnection
-        Dim adapter As New SqlDataAdapter
+    Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
+
         Dim sqlcmm As New SQLCOMMANDS
-        sqlcmm.SQLCONN(conn)
-        Using conn
-            conn.Open()
-            adapter.SelectCommand = New SqlCommand(cmm, conn)
-            adapter.Fill(dtTree)
-        End Using
 
-        For Each row As DataRow In dtTree.Rows
+        cnn = sqlcmm.SQLCONN()
 
-            trv.Nodes.Add(row("Country"))
-
-        Next
-
-        Dim trvParent As TreeNode
-
-        For Each trvParent In trv.Nodes
-
-            If trvParent.Level = 0 Then
-
-                cmm = "Select City, CountryID, Country from Cities inner join Countries on Cities.CountryID = Countries.ID where country ='" & trvParent.Text & "'"
-                Dim dtChildNode As New DataTable
-                conn = New SqlConnection
-                sqlcmm.SQLCONN(conn)
-                Using conn
-                    conn.Open()
-                    adapter.SelectCommand = New SqlCommand(cmm, conn)
-                    adapter.Fill(dtChildNode)
-                End Using
-
-                For Each row As DataRow In dtChildNode.Rows
-                    trvParent.Nodes.Add(row("City"))
-                Next
-
-            End If
-
-        Next
-
-
+        Form1_Load(sender, e)
     End Sub
 
 
 End Class
 
 
+Public Class FormBuild
+
+
+    Dim frmInputDatabase As New Form
+
+    Public Sub Input_Database(ByVal array As ArrayList)
+
+        Dim i As Integer = 0
+
+        Dim txtPC As New TextBox
+        Dim txtServer As New TextBox
+        Dim txtDatabase As New TextBox
+
+        Dim lblPC As New Label
+        Dim lblServer As New Label
+        Dim lblDatabase As New Label
+
+        Dim btnOK As New Button
+
+        frmInputDatabase.Size = New Size(300, 250)
+        frmInputDatabase.FormBorderStyle = FormBorderStyle.FixedDialog
+        frmInputDatabase.MaximizeBox = False
+        frmInputDatabase.MinimizeBox = False
+        frmInputDatabase.Text = "Input Database"
+        lblPC.Text = "PC Name:"
+        lblServer.Text = "Server Name:"
+        lblDatabase.Text = "Database:"
+        lblPC.Size = New Size(100, 23)
+        lblServer.Size = lblPC.Size
+        lblDatabase.Size = lblPC.Size
+        lblPC.Location = New Point(20, 45)
+        lblServer.Location = New Point(lblPC.Location.X, lblPC.Location.Y + lblPC.Height + 10)
+        lblDatabase.Location = New Point(lblServer.Location.X, lblServer.Location.Y + lblServer.Height + 10)
+        txtPC.Size = New Size(120, 30)
+        txtServer.Size = txtPC.Size
+        txtDatabase.Size = txtPC.Size
+        txtPC.Location = New Point(lblPC.Location.X + lblPC.Width + 10, lblPC.Location.Y - 5)
+        txtServer.Location = New Point(txtPC.Location.X, txtPC.Location.Y + txtPC.Height + 10)
+        txtDatabase.Location = New Point(txtServer.Location.X, txtServer.Location.Y + txtServer.Height + 10)
+        btnOK.Text = "OK"
+        btnOK.Size = New Size(100, 30)
+        btnOK.Location = New Point(frmInputDatabase.Width - btnOK.Width - 30, frmInputDatabase.Height - btnOK.Width + 20)
+
+        frmInputDatabase.Controls.Add(lblPC)
+        frmInputDatabase.Controls.Add(lblServer)
+        frmInputDatabase.Controls.Add(lblDatabase)
+        frmInputDatabase.Controls.Add(txtPC)
+        frmInputDatabase.Controls.Add(txtServer)
+        frmInputDatabase.Controls.Add(txtDatabase)
+        frmInputDatabase.Controls.Add(btnOK)
+
+        AddHandler btnOK.Click, AddressOf btnOK_Click
+
+        frmInputDatabase.ShowDialog()
+
+        If frmInputDatabase.DialogResult = DialogResult.OK Then
+
+            For Each ctrl As Control In frmInputDatabase.Controls
+                If TypeOf ctrl Is TextBox Then
+                    array.Insert(i, ctrl.Text)
+                End If
+
+            Next
+            frmInputDatabase.Close()
+        End If
+
+
+    End Sub
+
+
+    Private Sub btnOK_Click()
+
+        frmInputDatabase.DialogResult = DialogResult.OK
+
+    End Sub
+
+End Class
+
 
 Public Class SQLCOMMANDS
 
 
 
-    Dim cnn As String = "Data Source=ALEX-PC\SQLEXPRESS01;Initial Catalog=TEMP;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+
     Dim adapter As SqlDataAdapter
+    Dim cnn As String
+    Public Function SQLCONN()
 
-    Public Sub SQLCONN(ByRef conn As SqlConnection)
 
-        conn.ConnectionString = cnn
 
-    End Sub
+        Dim frmInput As New FormBuild
+        Dim array As New ArrayList
+        frmInput.Input_Database(array)
+        cnn = "Data Source=" & array(2) & "\" & array(1) & ";Initial Catalog=" & array(0) _
+        & ";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+        Return cnn
+
+    End Function
     Public Sub SQLSELECT(ByRef dt As DataTable, ByVal cmm As String)
 
         adapter = New SqlDataAdapter
         Dim CONN As New SqlConnection
 
         dt.Clear()
-        SQLCONN(CONN)
+        CONN.ConnectionString = cnn
 
         Using CONN
             CONN.Open()
@@ -202,7 +254,7 @@ Public Class SQLCOMMANDS
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        SQLCONN(conn)
+        conn.ConnectionString = cnn
 
         Using conn
             conn.Open()
@@ -221,7 +273,8 @@ Public Class SQLCOMMANDS
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        SQLCONN(conn)
+        conn.ConnectionString = cnn
+
 
         Using conn
             conn.Open()
@@ -237,7 +290,7 @@ Public Class SQLCOMMANDS
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        SQLCONN(conn)
+        conn.ConnectionString = cnn
 
         Using conn
             conn.Open()
@@ -253,36 +306,39 @@ Public Class SQLCOMMANDS
 End Class
 
 
-
-
 Public Class DataTree
 
 
     Public Sub populateTree(ByRef trv As TreeView)
 
-        Dim trn As TreeNode
-        Dim dtTree As New DataTable
         Dim sqlcmm As New SQLCOMMANDS
+        Dim dtTree As New DataTable
+        Dim i As Integer
+
         sqlcmm.SQLSELECT(dtTree, "Select * from Users")
+        Dim LevelMax As Integer = dtTree.Compute("MAX(NodeLevel)", "")
 
-        For Each dr As DataRow In dtTree.Rows
 
-            If dr("NodeLevel") = 0 Then
-                trn = New TreeNode
-                trn.Text = dr("Name")
-                trn.Name = dr("ID")
-                trv.Nodes.Add(trn)
+        Dim nodeHome As New TreeNode
+        nodeHome.Text = "Home"
+        nodeHome.Name = 0
+        trv.Nodes.Add(nodeHome)
 
-            Else
+        For i = 0 To LevelMax
 
-                For Each node As TreeNode In trv.Nodes
+
+            For Each row As DataRow In dtTree.Select("NodeLevel=" & i, "")
+
+                Dim node As New TreeNode
+
+                node.Text = row("Name")
+                node.Name = row("ID")
+
+                trv.Nodes.Find(row("IDParent"), True)(0).Nodes.Add(node)
+
+
 
             Next
-
-                    End If
-                Next
-
-            End If
 
 
         Next

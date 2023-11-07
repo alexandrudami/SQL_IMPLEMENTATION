@@ -51,7 +51,7 @@ Partial Class Form1
         dgv.Name = "dgv"
         dgv.RowTemplate.Height = 25
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgv.Size = New Size(530, 401)
+        dgv.Size = New Size(533, 401)
         dgv.TabIndex = 0
         ' 
         ' tsp
@@ -120,7 +120,7 @@ Partial Class Form1
         ' 
         spc.Panel2.Controls.Add(dgv)
         spc.Size = New Size(800, 401)
-        spc.SplitterDistance = 266
+        spc.SplitterDistance = 263
         spc.TabIndex = 3
         ' 
         ' trv
@@ -128,12 +128,12 @@ Partial Class Form1
         trv.Dock = DockStyle.Fill
         trv.Location = New Point(0, 0)
         trv.Name = "trv"
-        trv.Size = New Size(266, 401)
+        trv.Size = New Size(263, 401)
         trv.TabIndex = 0
         ' 
         ' Form1
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(800, 450)
         Controls.Add(spc)
