@@ -11,20 +11,15 @@ Imports SQL_IMPLEMENTATION.My
 Public Class Form1
     Dim dt As New DataTable
     Dim cmmSelect As String = "Select PersID, Nume, JudID, Judet from Persoane Left Join Judete ON Persoane.JudID = Judete.ID"
-    Dim cnn As String
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
 
         Dim dtr As New DataTree
-        If cnn IsNot Nothing Then
+        If My.Settings.txtPC = "" Then
+
+        Else
             dtr.populateTree(trv)
         End If
-
-
-
-
-
-
 
 
     End Sub
@@ -50,7 +45,7 @@ Public Class Form1
 
         For Each dr In drModif
 
-            sqlcmm.SQLUPDATE(dr("PersID"), dr("Nume"), dr("JudID"))
+            'sqlcmm.SQLUPDATE()
 
         Next
 
@@ -116,17 +111,13 @@ Public Class Form1
 
     End Sub
 
-    Public Function getConnectionString()
-        Return cnn
-    End Function
 
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
 
-        Dim sqlcmm As New SQLCOMMANDS
-
-        cnn = sqlcmm.SQLCONN()
-
+        Dim frm As New FormBuild
+        frm.Input_Database()
         Form1_Load(sender, e)
+
     End Sub
 
 
@@ -138,7 +129,7 @@ Public Class FormBuild
 
     Dim frmInputDatabase As New Form
 
-    Public Sub Input_Database(ByVal array As ArrayList)
+    Public Sub Input_Database()
 
         Dim i As Integer = 0
 
@@ -166,6 +157,9 @@ Public Class FormBuild
         lblPC.Location = New Point(20, 45)
         lblServer.Location = New Point(lblPC.Location.X, lblPC.Location.Y + lblPC.Height + 10)
         lblDatabase.Location = New Point(lblServer.Location.X, lblServer.Location.Y + lblServer.Height + 10)
+        txtPC.Name = "txtPC"
+        txtServer.Name = "txtServer"
+        txtDatabase.Name = "txtDatabase"
         txtPC.Size = New Size(120, 30)
         txtServer.Size = txtPC.Size
         txtDatabase.Size = txtPC.Size
@@ -192,9 +186,9 @@ Public Class FormBuild
 
             For Each ctrl As Control In frmInputDatabase.Controls
                 If TypeOf ctrl Is TextBox Then
-                    array.Insert(i, ctrl.Text)
+                    My.Settings.Item(ctrl.Name) = ctrl.Text
+                    My.Settings.Save()
                 End If
-
             Next
             frmInputDatabase.Close()
         End If
@@ -219,25 +213,19 @@ Public Class SQLCOMMANDS
 
     Dim adapter As SqlDataAdapter
     Dim cnn As String
-    Public Function SQLCONN()
+    Public Sub SQLCONN(ByRef conn As SqlConnection)
 
-
-
-        Dim frmInput As New FormBuild
-        Dim array As New ArrayList
-        frmInput.Input_Database(array)
-        cnn = "Data Source=" & array(2) & "\" & array(1) & ";Initial Catalog=" & array(0) _
+        cnn = "Data Source=" & My.Settings.txtPC & "\" & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
         & ";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
-        Return cnn
-
-    End Function
+        conn.ConnectionString = cnn
+    End Sub
     Public Sub SQLSELECT(ByRef dt As DataTable, ByVal cmm As String)
 
         adapter = New SqlDataAdapter
         Dim CONN As New SqlConnection
 
         dt.Clear()
-        CONN.ConnectionString = cnn
+        SQLCONN(CONN)
 
         Using CONN
             CONN.Open()
@@ -248,33 +236,43 @@ Public Class SQLCOMMANDS
 
     End Sub
 
-    Public Sub SQLINSERT()
+    Public Sub SQLINSERT(ByVal cmm As String)
+        adapter = New SqlDataAdapter
+        Dim conn As New SqlConnection
 
+        SQLCONN(conn)
+
+        Using conn
+            conn.Open()
+            adapter.InsertCommand = New SqlCommand(cmm, conn)
+            adapter.InsertCommand.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    Public Sub SQLINSERTEMPTY(ByVal tb As String, ByVal idName As String)
 
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        conn.ConnectionString = cnn
+        SQLCONN(conn)
 
         Using conn
             conn.Open()
-            adapter.SelectCommand = New SqlCommand("SELECT MAX(PersID) FROM Persoane", conn)
+            adapter.SelectCommand = New SqlCommand("SELECT MAX(ID) FROM " & tb, conn)
             Dim id As Integer = adapter.SelectCommand.ExecuteScalar + 1
-            Dim cmm As String = "Insert into Persoane (PersID) values (" & id & ")"
+            Dim cmm As String = "Insert into " & tb & "(ID) values (" & id & ")"
             adapter.InsertCommand = New SqlCommand(cmm, conn)
             adapter.InsertCommand.ExecuteNonQuery()
         End Using
 
     End Sub
 
-    Public Sub SQLUPDATE(ByVal id As Integer, ByVal val1 As String, ByVal val2 As String)
+    Public Sub SQLUPDATE(ByVal cmm As String)
 
-        Dim cmm As String = "Update Persoane Set Nume='" & val1 & "', JudID = " & val2 & " where PersID = " & id
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        conn.ConnectionString = cnn
-
+        SQLCONN(conn)
 
         Using conn
             conn.Open()
@@ -284,13 +282,12 @@ Public Class SQLCOMMANDS
 
     End Sub
 
-    Public Sub SQLDELETE(ByVal id As String)
+    Public Sub SQLDELETE(ByVal cmm As String)
 
-        Dim cmm As String = "Delete from Persoane Where PersID=" & id
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
-        conn.ConnectionString = cnn
+        SQLCONN(conn)
 
         Using conn
             conn.Open()

@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="txtPC" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">ALEX-PC</Value>
     </Setting>
     <Setting Name="txtSERVER" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">SQLEXPRESS01</Value>
     </Setting>
     <Setting Name="txtDATABASE" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">TEMP</Value>
     </Setting>
   </Settings>
 </SettingsFile>
