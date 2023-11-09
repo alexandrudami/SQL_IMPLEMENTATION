@@ -24,21 +24,24 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(Form1))
         dgv = New DataGridView()
-        tsp = New ToolStrip()
-        btnADD = New ToolStripButton()
-        btnSave = New ToolStripButton()
-        btnDELETE = New ToolStripButton()
         mst = New MenuStrip()
         btnConnect = New ToolStripMenuItem()
         spc = New SplitContainer()
         trv = New TreeView()
+        tspGrid = New ToolStrip()
+        btnADD = New ToolStripButton()
+        btnSave = New ToolStripButton()
+        btnDELETE = New ToolStripButton()
+        tspTree = New ToolStrip()
+        ToolStripButton1 = New ToolStripButton()
         CType(dgv, ComponentModel.ISupportInitialize).BeginInit()
-        tsp.SuspendLayout()
         mst.SuspendLayout()
         CType(spc, ComponentModel.ISupportInitialize).BeginInit()
         spc.Panel1.SuspendLayout()
         spc.Panel2.SuspendLayout()
         spc.SuspendLayout()
+        tspGrid.SuspendLayout()
+        tspTree.SuspendLayout()
         SuspendLayout()
         ' 
         ' dgv
@@ -47,21 +50,64 @@ Partial Class Form1
         dgv.AllowUserToDeleteRows = False
         dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgv.Dock = DockStyle.Fill
-        dgv.Location = New Point(0, 0)
+        dgv.Location = New Point(0, 25)
         dgv.Name = "dgv"
         dgv.RowTemplate.Height = 25
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgv.Size = New Size(533, 401)
+        dgv.Size = New Size(535, 401)
         dgv.TabIndex = 0
         ' 
-        ' tsp
+        ' mst
         ' 
-        tsp.Items.AddRange(New ToolStripItem() {btnADD, btnSave, btnDELETE})
-        tsp.Location = New Point(0, 0)
-        tsp.Name = "tsp"
-        tsp.Size = New Size(800, 25)
-        tsp.TabIndex = 1
-        tsp.Text = "ToolStrip1"
+        mst.Dock = DockStyle.Bottom
+        mst.Items.AddRange(New ToolStripItem() {btnConnect})
+        mst.Location = New Point(0, 426)
+        mst.Name = "mst"
+        mst.Size = New Size(800, 24)
+        mst.TabIndex = 2
+        mst.Text = "MenuStrip1"
+        ' 
+        ' btnConnect
+        ' 
+        btnConnect.Name = "btnConnect"
+        btnConnect.Size = New Size(105, 20)
+        btnConnect.Text = "SQL Connection"
+        ' 
+        ' spc
+        ' 
+        spc.Dock = DockStyle.Fill
+        spc.Location = New Point(0, 0)
+        spc.Name = "spc"
+        ' 
+        ' spc.Panel1
+        ' 
+        spc.Panel1.Controls.Add(trv)
+        spc.Panel1.Controls.Add(tspTree)
+        ' 
+        ' spc.Panel2
+        ' 
+        spc.Panel2.Controls.Add(dgv)
+        spc.Panel2.Controls.Add(tspGrid)
+        spc.Size = New Size(800, 426)
+        spc.SplitterDistance = 261
+        spc.TabIndex = 3
+        ' 
+        ' trv
+        ' 
+        trv.Dock = DockStyle.Fill
+        trv.Location = New Point(0, 25)
+        trv.Name = "trv"
+        trv.Size = New Size(261, 401)
+        trv.TabIndex = 0
+        ' 
+        ' tspGrid
+        ' 
+        tspGrid.Items.AddRange(New ToolStripItem() {btnADD, btnSave, btnDELETE})
+        tspGrid.Location = New Point(0, 0)
+        tspGrid.Name = "tspGrid"
+        tspGrid.Size = New Size(535, 25)
+        tspGrid.TabIndex = 2
+        tspGrid.Text = "ToolStrip1"
         ' 
         ' btnADD
         ' 
@@ -90,46 +136,23 @@ Partial Class Form1
         btnDELETE.Size = New Size(23, 22)
         btnDELETE.Text = "ToolStripButton1"
         ' 
-        ' mst
+        ' tspTree
         ' 
-        mst.Dock = DockStyle.Bottom
-        mst.Items.AddRange(New ToolStripItem() {btnConnect})
-        mst.Location = New Point(0, 426)
-        mst.Name = "mst"
-        mst.Size = New Size(800, 24)
-        mst.TabIndex = 2
-        mst.Text = "MenuStrip1"
+        tspTree.Items.AddRange(New ToolStripItem() {ToolStripButton1})
+        tspTree.Location = New Point(0, 0)
+        tspTree.Name = "tspTree"
+        tspTree.Size = New Size(261, 25)
+        tspTree.TabIndex = 3
+        tspTree.Text = "ToolStrip1"
         ' 
-        ' btnConnect
+        ' ToolStripButton1
         ' 
-        btnConnect.Name = "btnConnect"
-        btnConnect.Size = New Size(105, 20)
-        btnConnect.Text = "SQL Connection"
-        ' 
-        ' spc
-        ' 
-        spc.Dock = DockStyle.Fill
-        spc.Location = New Point(0, 25)
-        spc.Name = "spc"
-        ' 
-        ' spc.Panel1
-        ' 
-        spc.Panel1.Controls.Add(trv)
-        ' 
-        ' spc.Panel2
-        ' 
-        spc.Panel2.Controls.Add(dgv)
-        spc.Size = New Size(800, 401)
-        spc.SplitterDistance = 263
-        spc.TabIndex = 3
-        ' 
-        ' trv
-        ' 
-        trv.Dock = DockStyle.Fill
-        trv.Location = New Point(0, 0)
-        trv.Name = "trv"
-        trv.Size = New Size(263, 401)
-        trv.TabIndex = 0
+        ToolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image
+        ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), Image)
+        ToolStripButton1.ImageTransparentColor = Color.Magenta
+        ToolStripButton1.Name = "ToolStripButton1"
+        ToolStripButton1.Size = New Size(23, 22)
+        ToolStripButton1.Text = "ToolStripButton1"
         ' 
         ' Form1
         ' 
@@ -137,31 +160,36 @@ Partial Class Form1
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(800, 450)
         Controls.Add(spc)
-        Controls.Add(tsp)
         Controls.Add(mst)
         MainMenuStrip = mst
         Name = "Form1"
         Text = "Form1"
         CType(dgv, ComponentModel.ISupportInitialize).EndInit()
-        tsp.ResumeLayout(False)
-        tsp.PerformLayout()
         mst.ResumeLayout(False)
         mst.PerformLayout()
         spc.Panel1.ResumeLayout(False)
+        spc.Panel1.PerformLayout()
         spc.Panel2.ResumeLayout(False)
+        spc.Panel2.PerformLayout()
         CType(spc, ComponentModel.ISupportInitialize).EndInit()
         spc.ResumeLayout(False)
+        tspGrid.ResumeLayout(False)
+        tspGrid.PerformLayout()
+        tspTree.ResumeLayout(False)
+        tspTree.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
 
     Friend WithEvents dgv As DataGridView
-    Friend WithEvents tsp As ToolStrip
-    Friend WithEvents btnADD As ToolStripButton
-    Friend WithEvents btnSave As ToolStripButton
-    Friend WithEvents btnDELETE As ToolStripButton
     Friend WithEvents mst As MenuStrip
     Friend WithEvents btnConnect As ToolStripMenuItem
     Friend WithEvents spc As SplitContainer
     Friend WithEvents trv As TreeView
+    Friend WithEvents tspTree As ToolStrip
+    Friend WithEvents ToolStripButton1 As ToolStripButton
+    Friend WithEvents tspGrid As ToolStrip
+    Friend WithEvents btnADD As ToolStripButton
+    Friend WithEvents btnSave As ToolStripButton
+    Friend WithEvents btnDELETE As ToolStripButton
 End Class

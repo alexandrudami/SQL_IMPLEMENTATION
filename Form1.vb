@@ -13,6 +13,9 @@ Public Class Form1
     Dim cmmSelect As String = "Select PersID, Nume, JudID, Judet from Persoane Left Join Judete ON Persoane.JudID = Judete.ID"
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
+        Dim frmBuild As New FormBuild
+        Dim arr As New ArrayList From {"ID", "Name"}
+        frmBuild.SelfBuildForm(arr)
 
         Dim dtr As New DataTree
         If My.Settings.txtPC = "" Then
@@ -21,96 +24,23 @@ Public Class Form1
             dtr.populateTree(trv)
         End If
 
+    End Sub
+
+    Private Sub btnADD_Click(sender As Object, e As EventArgs)
+
 
     End Sub
 
-    Private Sub btnADD_Click(sender As Object, e As EventArgs) Handles btnADD.Click
+    Private Sub btnSave_Click(sender As Object, e As EventArgs)
 
-        Dim sqlcmm As New SQLCOMMANDS
-
-        sqlcmm.SQLINSERT()
-        sqlcmm.SQLSELECT(dt, cmmSelect)
-
-    End Sub
-
-    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-
-        Dim dr As DataRow
-        Dim sqlcmm As New SQLCOMMANDS
-
-
-        Dim drModif = From drx In dt.Rows
-                      Where drx.RowState = DataRowState.Modified
-
-
-        For Each dr In drModif
-
-            'sqlcmm.SQLUPDATE()
-
-        Next
-
-        sqlcmm.SQLSELECT(dt, cmmSelect)
 
     End Sub
 
 
-    Private Sub btnDELETE_Click(sender As Object, e As EventArgs) Handles btnDELETE.Click
+    Private Sub btnDELETE_Click(sender As Object, e As EventArgs)
 
-        Dim row As DataGridViewRow
-        Dim sqlcmm As New SQLCOMMANDS
-
-        For Each row In dgv.SelectedRows
-
-            sqlcmm.SQLDELETE(dgv.Item("PersID", row.Index).Value)
-
-        Next
-
-        sqlcmm.SQLSELECT(dt, cmmSelect)
 
     End Sub
-
-    Dim judID() As ArrayList
-    Dim dgvList As DataGridView
-    Dim frmList As Form
-    Dim dtList As New DataTable
-
-    Private Sub dgv_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellDoubleClick
-        If dgv.CurrentCell.OwningColumn.HeaderText = "Judet" Then
-
-            Dim sqlcmm As New SQLCOMMANDS
-            Dim cmm As String = "Select * from Judete"
-            frmList = New Form
-            dgvList = New DataGridView
-
-            frmList.Size = New Drawing.Size(500, 500)
-            dgvList.Dock = DockStyle.Fill
-
-            sqlcmm.SQLSELECT(dtList, cmm)
-
-            dgvList.DataSource = dtList
-            frmList.Controls.Add(dgvList)
-
-            frmList.Show()
-
-            AddHandler dgvList.CellDoubleClick, AddressOf dgvList_CellDoubleClick
-
-        End If
-    End Sub
-
-    Private Sub dgvList_CellDoubleClick()
-
-        Dim dr As DataRow
-        Dim drlist As DataRow
-
-        drlist = dtList.Rows(dgvList.CurrentCell.RowIndex)
-        dr = dt.Rows(dgv.CurrentCell.RowIndex)
-        dr("JudID") = drlist("ID")
-        dr("Judet") = drlist("Judet")
-
-        frmList.Close()
-
-    End Sub
-
 
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
 
@@ -120,7 +50,20 @@ Public Class Form1
 
     End Sub
 
+    Private Sub dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
 
+    End Sub
+
+    Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
+
+        Dim cmm As String
+        Dim sqlcmm As New SQLCOMMANDS
+
+        cmm = "Insert into Users(IDParent, NodeLevel, Name) values (" & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", "
+
+
+
+    End Sub
 End Class
 
 
@@ -128,6 +71,49 @@ Public Class FormBuild
 
 
     Dim frmInputDatabase As New Form
+    Dim frmSelfBuild As New Form
+
+    Public Sub SelfBuildForm(ByVal arr As ArrayList, ByVal arrRes As ArrayList)
+
+        Dim btnOK As New Button
+        frmSelfBuild.Size = New Size(270, 100)
+
+        Dim oldLoc As Integer = 10
+        Dim oldSize As Integer = 0
+
+        For Each obj As String In arr
+
+            Dim lbl As New Label
+            Dim txt As New TextBox
+
+            lbl.Text = obj & ":"
+            lbl.Name = "lbl" & obj
+            txt.Name = "txt" & obj
+            lbl.Size = New Size(100, 23)
+            txt.Size = New Size(120, 30)
+            lbl.Location = New Point(10, oldLoc + oldSize + 10)
+            txt.Location = New Point(lbl.Location.X + lbl.Width, lbl.Location.Y - 5)
+            frmSelfBuild.Controls.Add(lbl)
+            frmSelfBuild.Controls.Add(txt)
+            frmSelfBuild.Height = frmSelfBuild.Height + 40
+            oldLoc = lbl.Location.Y
+            oldSize = lbl.Size.Height
+        Next
+
+        btnOK.Size = New Size(100, 30)
+        btnOK.Text = "OK"
+        btnOK.Location = New Point(frmSelfBuild.Size.Width - btnOK.Size.Width - 40, frmSelfBuild.Size.Height - btnOK.Size.Height - 50)
+        frmSelfBuild.Controls.Add(btnOK)
+
+        AddHandler btnOK.Click, AddressOf btnOK_Click
+
+        frmSelfBuild.ShowDialog()
+
+        If frmSelfBuild.DialogResult = DialogResult.OK Then
+
+        End If
+
+    End Sub
 
     Public Sub Input_Database()
 
@@ -196,7 +182,6 @@ Public Class FormBuild
 
     End Sub
 
-
     Private Sub btnOK_Click()
 
         frmInputDatabase.DialogResult = DialogResult.OK
@@ -208,9 +193,6 @@ End Class
 
 Public Class SQLCOMMANDS
 
-
-
-
     Dim adapter As SqlDataAdapter
     Dim cnn As String
     Public Sub SQLCONN(ByRef conn As SqlConnection)
@@ -218,6 +200,7 @@ Public Class SQLCOMMANDS
         cnn = "Data Source=" & My.Settings.txtPC & "\" & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
         & ";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
         conn.ConnectionString = cnn
+
     End Sub
     Public Sub SQLSELECT(ByRef dt As DataTable, ByVal cmm As String)
 
@@ -231,12 +214,12 @@ Public Class SQLCOMMANDS
             CONN.Open()
             adapter.SelectCommand = New SqlCommand(cmm, CONN)
             adapter.Fill(dt)
-
         End Using
 
     End Sub
 
     Public Sub SQLINSERT(ByVal cmm As String)
+
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
 
@@ -247,9 +230,10 @@ Public Class SQLCOMMANDS
             adapter.InsertCommand = New SqlCommand(cmm, conn)
             adapter.InsertCommand.ExecuteNonQuery()
         End Using
+
     End Sub
 
-    Public Sub SQLINSERTEMPTY(ByVal tb As String, ByVal idName As String)
+    Public Sub SQLINSERTEMPTY(ByVal tb As String)
 
         adapter = New SqlDataAdapter
         Dim conn As New SqlConnection
@@ -297,14 +281,9 @@ Public Class SQLCOMMANDS
 
     End Sub
 
-
-
-
 End Class
 
-
 Public Class DataTree
-
 
     Public Sub populateTree(ByRef trv As TreeView)
 
@@ -322,8 +301,6 @@ Public Class DataTree
         trv.Nodes.Add(nodeHome)
 
         For i = 0 To LevelMax
-
-
             For Each row As DataRow In dtTree.Select("NodeLevel=" & i, "")
 
                 Dim node As New TreeNode
@@ -333,14 +310,8 @@ Public Class DataTree
 
                 trv.Nodes.Find(row("IDParent"), True)(0).Nodes.Add(node)
 
-
-
             Next
-
-
         Next
-
-
 
     End Sub
 
