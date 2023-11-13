@@ -54,31 +54,41 @@ Namespace My
             End Get
         End Property
         
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("ALEX-PC")>  _
-        Public ReadOnly Property txtPC() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property txtPC() As String
             Get
                 Return CType(Me("txtPC"),String)
             End Get
+            Set
+                Me("txtPC") = value
+            End Set
         End Property
         
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("SQLEXPRESS01")>  _
-        Public ReadOnly Property txtSERVER() As String
+         Global.System.Configuration.DefaultSettingValueAttribute(""),  _
+         Global.System.Configuration.SettingsManageabilityAttribute(Global.System.Configuration.SettingsManageability.Roaming)>  _
+        Public Property txtSERVER() As String
             Get
                 Return CType(Me("txtSERVER"),String)
             End Get
+            Set
+                Me("txtSERVER") = value
+            End Set
         End Property
         
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("TEMP")>  _
-        Public ReadOnly Property txtDATABASE() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property txtDATABASE() As String
             Get
                 Return CType(Me("txtDATABASE"),String)
             End Get
+            Set
+                Me("txtDATABASE") = value
+            End Set
         End Property
     End Class
 End Namespace

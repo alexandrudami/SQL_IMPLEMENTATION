@@ -2,6 +2,7 @@
 
 
 Imports System.CodeDom
+Imports System.ComponentModel
 Imports System.Drawing.Imaging
 Imports System.Security.AccessControl
 Imports System.Windows.Markup
@@ -14,11 +15,11 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Dim frmBuild As New FormBuild
-        Dim arr As New ArrayList From {"ID", "Name"}
-        frmBuild.SelfBuildForm(arr)
+
+
 
         Dim dtr As New DataTree
-        If My.Settings.txtPC = "" Then
+        If Settings.txtPC = "" Then
 
         Else
             dtr.populateTree(trv)
@@ -55,14 +56,28 @@ Public Class Form1
     End Sub
 
     Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
-
+        Dim frm As New FormBuild
         Dim cmm As String
         Dim sqlcmm As New SQLCOMMANDS
+        Dim aux As String = ""
 
-        cmm = "Insert into Users(IDParent, NodeLevel, Name) values (" & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", "
+        Dim arr As New ArrayList From {"Name"}
+        frm.SelfBuildForm(arr)
+
+        For Each ctrl As Control In frm.frmSelfBuild.Controls.OfType(Of TextBox)
+
+            aux = ctrl.Text
+
+        Next
+
+        cmm = "Insert into Users(IDParent, NodeLevel, Name) values (" & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", " & aux & ")"
+
+    End Sub
 
 
 
+    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        Settings.Save()
     End Sub
 End Class
 
@@ -71,9 +86,9 @@ Public Class FormBuild
 
 
     Dim frmInputDatabase As New Form
-    Dim frmSelfBuild As New Form
+    Public frmSelfBuild As New Form
 
-    Public Sub SelfBuildForm(ByVal arr As ArrayList, ByVal arrRes As ArrayList)
+    Public Sub SelfBuildForm(ByVal arr As ArrayList)
 
         Dim btnOK As New Button
         frmSelfBuild.Size = New Size(270, 100)
@@ -110,6 +125,8 @@ Public Class FormBuild
         frmSelfBuild.ShowDialog()
 
         If frmSelfBuild.DialogResult = DialogResult.OK Then
+
+            frmSelfBuild.Close()
 
         End If
 
@@ -170,11 +187,10 @@ Public Class FormBuild
 
         If frmInputDatabase.DialogResult = DialogResult.OK Then
 
-            For Each ctrl As Control In frmInputDatabase.Controls
-                If TypeOf ctrl Is TextBox Then
-                    My.Settings.Item(ctrl.Name) = ctrl.Text
-                    My.Settings.Save()
-                End If
+            For Each ctrl As Control In frmInputDatabase.Controls.OfType(Of TextBox)
+
+                Settings.Item(ctrl.Name) = ctrl.Text
+                My.Settings.Save()
             Next
             frmInputDatabase.Close()
         End If
