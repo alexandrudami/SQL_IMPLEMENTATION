@@ -11,14 +11,12 @@ Imports SQL_IMPLEMENTATION.My
 
 Public Class Form1
     Dim dt As New DataTable
+    Dim dtr As New DataTree
     Dim cmmSelect As String = "Select PersID, Nume, JudID, Judet from Persoane Left Join Judete ON Persoane.JudID = Judete.ID"
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Dim frmBuild As New FormBuild
 
-
-
-        Dim dtr As New DataTree
         If Settings.txtPC = "" Then
 
         Else
@@ -46,7 +44,16 @@ Public Class Form1
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
 
         Dim frm As New FormBuild
-        frm.Input_Database()
+        Dim arrInput As New ArrayList From {"PC", "Server", "Database"}
+        frm.SelfBuildForm(arrInput)
+
+        For Each ctrl As Control In frm.frmSelfBuild.Controls.OfType(Of TextBox)
+
+            Settings.Item(ctrl.Name) = ctrl.Text
+            My.Settings.Save()
+
+        Next
+
         Form1_Load(sender, e)
 
     End Sub
@@ -55,7 +62,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
+    Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles TreeADD.Click
         Dim frm As New FormBuild
         Dim cmm As String
         Dim sqlcmm As New SQLCOMMANDS
@@ -70,15 +77,33 @@ Public Class Form1
 
         Next
 
-        cmm = "Insert into Users(IDParent, NodeLevel, Name) values (" & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", " & aux & ")"
+        sqlcmm.SQLSELECT(dt, "Select * from Users")
+        Dim maxID As Integer = dt.Compute("MAX(ID)", "") + 1
+        cmm = "Insert into Users(ID, IDParent, NodeLevel, Name) values (" & maxID & ", " & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", '" & aux & "')"
+        sqlcmm.SQLINSERT(cmm)
+        dtr.populateTree(trv)
 
     End Sub
 
-
-
-    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Settings.Save()
     End Sub
+
+    Private Sub TreeDEL_Click(sender As Object, e As EventArgs) Handles TreeDEL.Click
+
+        Dim cmm As String
+        Dim sqlcmm As New SQLCOMMANDS
+
+        If trv.SelectedNode.Nodes.Count > 0 Then
+            MsgBox("The item cannot be deleted. Please make sure it does not have any other items tied to it.")
+        Else
+            cmm = "Delete From Users where ID= " & trv.SelectedNode.Name
+            sqlcmm.SQLDELETE(cmm)
+            dtr.populateTree(trv)
+        End If
+
+    End Sub
+
 End Class
 
 
@@ -131,73 +156,6 @@ Public Class FormBuild
         End If
 
     End Sub
-
-    Public Sub Input_Database()
-
-        Dim i As Integer = 0
-
-        Dim txtPC As New TextBox
-        Dim txtServer As New TextBox
-        Dim txtDatabase As New TextBox
-
-        Dim lblPC As New Label
-        Dim lblServer As New Label
-        Dim lblDatabase As New Label
-
-        Dim btnOK As New Button
-
-        frmInputDatabase.Size = New Size(300, 250)
-        frmInputDatabase.FormBorderStyle = FormBorderStyle.FixedDialog
-        frmInputDatabase.MaximizeBox = False
-        frmInputDatabase.MinimizeBox = False
-        frmInputDatabase.Text = "Input Database"
-        lblPC.Text = "PC Name:"
-        lblServer.Text = "Server Name:"
-        lblDatabase.Text = "Database:"
-        lblPC.Size = New Size(100, 23)
-        lblServer.Size = lblPC.Size
-        lblDatabase.Size = lblPC.Size
-        lblPC.Location = New Point(20, 45)
-        lblServer.Location = New Point(lblPC.Location.X, lblPC.Location.Y + lblPC.Height + 10)
-        lblDatabase.Location = New Point(lblServer.Location.X, lblServer.Location.Y + lblServer.Height + 10)
-        txtPC.Name = "txtPC"
-        txtServer.Name = "txtServer"
-        txtDatabase.Name = "txtDatabase"
-        txtPC.Size = New Size(120, 30)
-        txtServer.Size = txtPC.Size
-        txtDatabase.Size = txtPC.Size
-        txtPC.Location = New Point(lblPC.Location.X + lblPC.Width + 10, lblPC.Location.Y - 5)
-        txtServer.Location = New Point(txtPC.Location.X, txtPC.Location.Y + txtPC.Height + 10)
-        txtDatabase.Location = New Point(txtServer.Location.X, txtServer.Location.Y + txtServer.Height + 10)
-        btnOK.Text = "OK"
-        btnOK.Size = New Size(100, 30)
-        btnOK.Location = New Point(frmInputDatabase.Width - btnOK.Width - 30, frmInputDatabase.Height - btnOK.Width + 20)
-
-        frmInputDatabase.Controls.Add(lblPC)
-        frmInputDatabase.Controls.Add(lblServer)
-        frmInputDatabase.Controls.Add(lblDatabase)
-        frmInputDatabase.Controls.Add(txtPC)
-        frmInputDatabase.Controls.Add(txtServer)
-        frmInputDatabase.Controls.Add(txtDatabase)
-        frmInputDatabase.Controls.Add(btnOK)
-
-        AddHandler btnOK.Click, AddressOf btnOK_Click
-
-        frmInputDatabase.ShowDialog()
-
-        If frmInputDatabase.DialogResult = DialogResult.OK Then
-
-            For Each ctrl As Control In frmInputDatabase.Controls.OfType(Of TextBox)
-
-                Settings.Item(ctrl.Name) = ctrl.Text
-                My.Settings.Save()
-            Next
-            frmInputDatabase.Close()
-        End If
-
-
-    End Sub
-
     Private Sub btnOK_Click()
 
         frmInputDatabase.DialogResult = DialogResult.OK
@@ -206,11 +164,11 @@ Public Class FormBuild
 
 End Class
 
-
 Public Class SQLCOMMANDS
 
     Dim adapter As SqlDataAdapter
     Dim cnn As String
+
     Public Sub SQLCONN(ByRef conn As SqlConnection)
 
         cnn = "Data Source=" & My.Settings.txtPC & "\" & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
@@ -310,7 +268,7 @@ Public Class DataTree
         sqlcmm.SQLSELECT(dtTree, "Select * from Users")
         Dim LevelMax As Integer = dtTree.Compute("MAX(NodeLevel)", "")
 
-
+        trv.Nodes.Clear()
         Dim nodeHome As New TreeNode
         nodeHome.Text = "Home"
         nodeHome.Name = 0
@@ -319,10 +277,10 @@ Public Class DataTree
         For i = 0 To LevelMax
             For Each row As DataRow In dtTree.Select("NodeLevel=" & i, "")
 
-                Dim node As New TreeNode
-
-                node.Text = row("Name")
-                node.Name = row("ID")
+                Dim node As New TreeNode With {
+                    .Text = row("Name"),
+                    .Name = row("ID")
+                }
 
                 trv.Nodes.Find(row("IDParent"), True)(0).Nodes.Add(node)
 
@@ -333,16 +291,6 @@ Public Class DataTree
 
     Private Sub addNode()
 
-
-
-
-
-
     End Sub
-
-
-
-
-
 
 End Class

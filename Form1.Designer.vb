@@ -28,20 +28,21 @@ Partial Class Form1
         btnConnect = New ToolStripMenuItem()
         spc = New SplitContainer()
         trv = New TreeView()
+        tspTree = New ToolStrip()
+        TreeADD = New ToolStripButton()
+        TreeDEL = New ToolStripButton()
         tspGrid = New ToolStrip()
         btnADD = New ToolStripButton()
         btnSave = New ToolStripButton()
         btnDELETE = New ToolStripButton()
-        tspTree = New ToolStrip()
-        ToolStripButton1 = New ToolStripButton()
         CType(dgv, ComponentModel.ISupportInitialize).BeginInit()
         mst.SuspendLayout()
         CType(spc, ComponentModel.ISupportInitialize).BeginInit()
         spc.Panel1.SuspendLayout()
         spc.Panel2.SuspendLayout()
         spc.SuspendLayout()
-        tspGrid.SuspendLayout()
         tspTree.SuspendLayout()
+        tspGrid.SuspendLayout()
         SuspendLayout()
         ' 
         ' dgv
@@ -100,6 +101,33 @@ Partial Class Form1
         trv.Size = New Size(261, 401)
         trv.TabIndex = 0
         ' 
+        ' tspTree
+        ' 
+        tspTree.Items.AddRange(New ToolStripItem() {TreeADD, TreeDEL})
+        tspTree.Location = New Point(0, 0)
+        tspTree.Name = "tspTree"
+        tspTree.Size = New Size(261, 25)
+        tspTree.TabIndex = 3
+        tspTree.Text = "ToolStrip1"
+        ' 
+        ' TreeADD
+        ' 
+        TreeADD.DisplayStyle = ToolStripItemDisplayStyle.Image
+        TreeADD.Image = CType(resources.GetObject("TreeADD.Image"), Image)
+        TreeADD.ImageTransparentColor = Color.Magenta
+        TreeADD.Name = "TreeADD"
+        TreeADD.Size = New Size(23, 22)
+        TreeADD.Text = "ToolStripButton1"
+        ' 
+        ' TreeDEL
+        ' 
+        TreeDEL.DisplayStyle = ToolStripItemDisplayStyle.Image
+        TreeDEL.Image = CType(resources.GetObject("TreeDEL.Image"), Image)
+        TreeDEL.ImageTransparentColor = Color.Magenta
+        TreeDEL.Name = "TreeDEL"
+        TreeDEL.Size = New Size(23, 22)
+        TreeDEL.Text = "ToolStripButton2"
+        ' 
         ' tspGrid
         ' 
         tspGrid.Items.AddRange(New ToolStripItem() {btnADD, btnSave, btnDELETE})
@@ -136,24 +164,6 @@ Partial Class Form1
         btnDELETE.Size = New Size(23, 22)
         btnDELETE.Text = "ToolStripButton1"
         ' 
-        ' tspTree
-        ' 
-        tspTree.Items.AddRange(New ToolStripItem() {ToolStripButton1})
-        tspTree.Location = New Point(0, 0)
-        tspTree.Name = "tspTree"
-        tspTree.Size = New Size(261, 25)
-        tspTree.TabIndex = 3
-        tspTree.Text = "ToolStrip1"
-        ' 
-        ' ToolStripButton1
-        ' 
-        ToolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image
-        ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), Image)
-        ToolStripButton1.ImageTransparentColor = Color.Magenta
-        ToolStripButton1.Name = "ToolStripButton1"
-        ToolStripButton1.Size = New Size(23, 22)
-        ToolStripButton1.Text = "ToolStripButton1"
-        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -173,10 +183,10 @@ Partial Class Form1
         spc.Panel2.PerformLayout()
         CType(spc, ComponentModel.ISupportInitialize).EndInit()
         spc.ResumeLayout(False)
-        tspGrid.ResumeLayout(False)
-        tspGrid.PerformLayout()
         tspTree.ResumeLayout(False)
         tspTree.PerformLayout()
+        tspGrid.ResumeLayout(False)
+        tspGrid.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -187,9 +197,10 @@ Partial Class Form1
     Friend WithEvents spc As SplitContainer
     Friend WithEvents trv As TreeView
     Friend WithEvents tspTree As ToolStrip
-    Friend WithEvents ToolStripButton1 As ToolStripButton
+    Friend WithEvents TreeADD As ToolStripButton
     Friend WithEvents tspGrid As ToolStrip
     Friend WithEvents btnADD As ToolStripButton
     Friend WithEvents btnSave As ToolStripButton
     Friend WithEvents btnDELETE As ToolStripButton
+    Friend WithEvents TreeDEL As ToolStripButton
 End Class
