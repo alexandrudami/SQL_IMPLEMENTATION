@@ -91,18 +91,40 @@ Public Class Form1
 
     Private Sub TreeDEL_Click(sender As Object, e As EventArgs) Handles TreeDEL.Click
 
-        Dim cmm As String
-        Dim sqlcmm As New SQLCOMMANDS
 
-        If trv.SelectedNode.Nodes.Count > 0 Then
-            MsgBox("The item cannot be deleted. Please make sure it does not have any other items tied to it.")
-        Else
-            cmm = "Delete From Users where ID= " & trv.SelectedNode.Name
-            sqlcmm.SQLDELETE(cmm)
-            dtr.populateTree(trv)
-        End If
+        Dim sqlcmm As New SQLCOMMANDS
+        'Dim cmm As String
+        'If trv.SelectedNode.Nodes.Count > 0 Then
+        '    MsgBox("The item cannot be deleted. Please make sure it does not have any other items tied to it.")
+        'Else
+        '    cmm = "Delete From Users where ID= " & trv.SelectedNode.Name
+        '    sqlcmm.SQLDELETE(cmm)
+        '    dtr.populateTree(trv)
+        'End If
+
+
+        Dim nodes As New List(Of TreeNode)
+        getAllChildren(trv.SelectedNode, nodes)
+
+        For Each node As TreeNode In nodes
+            sqlcmm.SQLDELETE("Delete From Users where ID= " & node.Name)
+        Next
+        sqlcmm.SQLDELETE("Delete From Users where ID = " & trv.SelectedNode.Name)
+        dtr.populateTree(trv)
 
     End Sub
+
+
+
+    Public Sub getAllChildren(ByRef parentNode As TreeNode, nodes As List(Of TreeNode))
+
+        For Each childNode As TreeNode In parentNode.Nodes
+            nodes.Add(childNode)
+            getAllChildren(childNode, nodes)
+        Next
+
+    End Sub
+
 
 End Class
 
