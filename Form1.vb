@@ -58,9 +58,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
 
-    End Sub
 
     Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles TreeADD.Click
         Dim frm As New FormBuild
@@ -77,9 +75,9 @@ Public Class Form1
 
         Next
 
-        sqlcmm.SQLSELECT(dt, "Select * from Users")
-        Dim maxID As Integer = dt.Compute("MAX(ID)", "") + 1
-        cmm = "Insert into Users(ID, IDParent, NodeLevel, Name) values (" & maxID & ", " & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", '" & aux & "')"
+        sqlcmm.SQLSELECT(dt, "Select * from _Noduri")
+        Dim maxID As Integer = dt.Compute("MAX(id)", "") + 1
+        cmm = "Insert into Users(id, idp, LevelNod, Denumire) values (" & maxID & ", " & trv.SelectedNode.Name & ", " & trv.SelectedNode.Level & ", '" & aux & "')"
         sqlcmm.SQLINSERT(cmm)
         dtr.populateTree(trv)
 
@@ -91,25 +89,15 @@ Public Class Form1
 
     Private Sub TreeDEL_Click(sender As Object, e As EventArgs) Handles TreeDEL.Click
 
-
         Dim sqlcmm As New SQLCOMMANDS
-        'Dim cmm As String
-        'If trv.SelectedNode.Nodes.Count > 0 Then
-        '    MsgBox("The item cannot be deleted. Please make sure it does not have any other items tied to it.")
-        'Else
-        '    cmm = "Delete From Users where ID= " & trv.SelectedNode.Name
-        '    sqlcmm.SQLDELETE(cmm)
-        '    dtr.populateTree(trv)
-        'End If
-
-
         Dim nodes As New List(Of TreeNode)
+
         getAllChildren(trv.SelectedNode, nodes)
 
         For Each node As TreeNode In nodes
-            sqlcmm.SQLDELETE("Delete From Users where ID= " & node.Name)
+            sqlcmm.SQLDELETE("Delete From _Noduri where ID= " & node.Name)
         Next
-        sqlcmm.SQLDELETE("Delete From Users where ID = " & trv.SelectedNode.Name)
+        sqlcmm.SQLDELETE("Delete From _Noduri where ID = " & trv.SelectedNode.Name)
         dtr.populateTree(trv)
 
     End Sub
@@ -125,12 +113,16 @@ Public Class Form1
 
     End Sub
 
+    Private Sub trv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles trv.AfterSelect
 
+        Dim dt As New DataTree
+
+        dt.DisplayData(trv, dgv)
+
+    End Sub
 End Class
 
-
 Public Class FormBuild
-
 
     Dim frmInputDatabase As New Form
     Public frmSelfBuild As New Form
@@ -286,28 +278,48 @@ Public Class DataTree
         Dim sqlcmm As New SQLCOMMANDS
         Dim dtTree As New DataTable
         Dim i As Integer
-
-        sqlcmm.SQLSELECT(dtTree, "Select * from Users")
-        Dim LevelMax As Integer = dtTree.Compute("MAX(NodeLevel)", "")
+        Dim data As New Dictionary(Of Integer, String)
+        sqlcmm.SQLSELECT(dtTree, "Select * from _Noduri")
+        Dim LevelMax As Integer = dtTree.Compute("MAX(LevelNod)", "")
 
         trv.Nodes.Clear()
         Dim nodeHome As New TreeNode
         nodeHome.Text = "Home"
-        nodeHome.Name = 0
+        nodeHome.Name = 1
         trv.Nodes.Add(nodeHome)
-
+        Dim j As Integer = 0
         For i = 0 To LevelMax
-            For Each row As DataRow In dtTree.Select("NodeLevel=" & i, "")
-
+            For Each row As DataRow In dtTree.Select("LevelNod=" & i, "")
+                data.Add(row("id"), row("codSQL"))
                 Dim node As New TreeNode With {
-                    .Text = row("Name"),
-                    .Name = row("ID")
+                    .Text = row("DDenumire"),
+                    .Name = row("id"),
+                    .Tag = data
                 }
-
-                trv.Nodes.Find(row("IDParent"), True)(0).Nodes.Add(node)
+                j = j + 1
+                trv.Nodes.Find(row("idp"), True)(0).Nodes.Add(node)
 
             Next
         Next
+
+    End Sub
+
+    Public Sub DisplayData(ByRef tree As TreeView, ByRef dgv As DataGridView)
+
+        Dim dtSQL As New DataTable
+        Dim dtFill As New DataTable
+        Dim sqlcmm As New SQLCOMMANDS
+        Dim data As New Dictionary(Of Integer, String)
+        data = tree.SelectedNode.Tag
+        dtSQL.Clear()
+        If tree.SelectedNode.Tag IsNot Nothing Then
+            sqlcmm.SQLSELECT(dtSQL, "Select * from _Interogari where id= " & data(tree.SelectedNode.Name))
+
+            For Each row As DataRow In dtSQL.Select("id=" & data(tree.SelectedNode.Name), "")
+                sqlcmm.SQLSELECT(dtFill, row("Valoare"))
+            Next
+            dgv.DataSource = dtFill
+        End If
 
     End Sub
 
