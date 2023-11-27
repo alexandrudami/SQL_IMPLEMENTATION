@@ -31,10 +31,13 @@ Partial Class Form1
         tspTree = New ToolStrip()
         TreeADD = New ToolStripButton()
         TreeDEL = New ToolStripButton()
+        clbCol = New CheckedListBox()
         tspGrid = New ToolStrip()
         btnADD = New ToolStripButton()
         btnSave = New ToolStripButton()
         btnDELETE = New ToolStripButton()
+        btnEdit = New ToolStripButton()
+        SplitContainer1 = New SplitContainer()
         CType(dgv, ComponentModel.ISupportInitialize).BeginInit()
         mst.SuspendLayout()
         CType(spc, ComponentModel.ISupportInitialize).BeginInit()
@@ -43,6 +46,10 @@ Partial Class Form1
         spc.SuspendLayout()
         tspTree.SuspendLayout()
         tspGrid.SuspendLayout()
+        CType(SplitContainer1, ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer1.Panel1.SuspendLayout()
+        SplitContainer1.Panel2.SuspendLayout()
+        SplitContainer1.SuspendLayout()
         SuspendLayout()
         ' 
         ' dgv
@@ -51,20 +58,20 @@ Partial Class Form1
         dgv.AllowUserToDeleteRows = False
         dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgv.Dock = DockStyle.Fill
-        dgv.Location = New Point(0, 25)
+        dgv.Location = New Point(0, 0)
         dgv.Name = "dgv"
         dgv.RowTemplate.Height = 25
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgv.Size = New Size(535, 401)
+        dgv.Size = New Size(684, 467)
         dgv.TabIndex = 0
         ' 
         ' mst
         ' 
         mst.Dock = DockStyle.Bottom
         mst.Items.AddRange(New ToolStripItem() {btnConnect})
-        mst.Location = New Point(0, 426)
+        mst.Location = New Point(0, 492)
         mst.Name = "mst"
-        mst.Size = New Size(800, 24)
+        mst.Size = New Size(1134, 24)
         mst.TabIndex = 2
         mst.Text = "MenuStrip1"
         ' 
@@ -87,10 +94,10 @@ Partial Class Form1
         ' 
         ' spc.Panel2
         ' 
-        spc.Panel2.Controls.Add(dgv)
+        spc.Panel2.Controls.Add(SplitContainer1)
         spc.Panel2.Controls.Add(tspGrid)
-        spc.Size = New Size(800, 426)
-        spc.SplitterDistance = 261
+        spc.Size = New Size(1134, 492)
+        spc.SplitterDistance = 256
         spc.TabIndex = 3
         ' 
         ' trv
@@ -98,7 +105,7 @@ Partial Class Form1
         trv.Dock = DockStyle.Fill
         trv.Location = New Point(0, 25)
         trv.Name = "trv"
-        trv.Size = New Size(261, 401)
+        trv.Size = New Size(256, 467)
         trv.TabIndex = 0
         ' 
         ' tspTree
@@ -106,7 +113,7 @@ Partial Class Form1
         tspTree.Items.AddRange(New ToolStripItem() {TreeADD, TreeDEL})
         tspTree.Location = New Point(0, 0)
         tspTree.Name = "tspTree"
-        tspTree.Size = New Size(261, 25)
+        tspTree.Size = New Size(256, 25)
         tspTree.TabIndex = 3
         tspTree.Text = "ToolStrip1"
         ' 
@@ -128,12 +135,21 @@ Partial Class Form1
         TreeDEL.Size = New Size(23, 22)
         TreeDEL.Text = "ToolStripButton2"
         ' 
+        ' clbCol
+        ' 
+        clbCol.Dock = DockStyle.Fill
+        clbCol.FormattingEnabled = True
+        clbCol.Location = New Point(0, 0)
+        clbCol.Name = "clbCol"
+        clbCol.Size = New Size(186, 467)
+        clbCol.TabIndex = 3
+        ' 
         ' tspGrid
         ' 
-        tspGrid.Items.AddRange(New ToolStripItem() {btnADD, btnSave, btnDELETE})
+        tspGrid.Items.AddRange(New ToolStripItem() {btnADD, btnSave, btnDELETE, btnEdit})
         tspGrid.Location = New Point(0, 0)
         tspGrid.Name = "tspGrid"
-        tspGrid.Size = New Size(535, 25)
+        tspGrid.Size = New Size(874, 25)
         tspGrid.TabIndex = 2
         tspGrid.Text = "ToolStrip1"
         ' 
@@ -164,11 +180,38 @@ Partial Class Form1
         btnDELETE.Size = New Size(23, 22)
         btnDELETE.Text = "ToolStripButton1"
         ' 
+        ' btnEdit
+        ' 
+        btnEdit.AutoSize = False
+        btnEdit.DisplayStyle = ToolStripItemDisplayStyle.Image
+        btnEdit.Image = CType(resources.GetObject("btnEdit.Image"), Image)
+        btnEdit.ImageTransparentColor = Color.Magenta
+        btnEdit.Name = "btnEdit"
+        btnEdit.Size = New Size(23, 22)
+        btnEdit.Text = "ToolStripButton1"
+        ' 
+        ' SplitContainer1
+        ' 
+        SplitContainer1.Dock = DockStyle.Fill
+        SplitContainer1.Location = New Point(0, 25)
+        SplitContainer1.Name = "SplitContainer1"
+        ' 
+        ' SplitContainer1.Panel1
+        ' 
+        SplitContainer1.Panel1.Controls.Add(dgv)
+        ' 
+        ' SplitContainer1.Panel2
+        ' 
+        SplitContainer1.Panel2.Controls.Add(clbCol)
+        SplitContainer1.Size = New Size(874, 467)
+        SplitContainer1.SplitterDistance = 684
+        SplitContainer1.TabIndex = 4
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 450)
+        ClientSize = New Size(1134, 516)
         Controls.Add(spc)
         Controls.Add(mst)
         MainMenuStrip = mst
@@ -187,6 +230,10 @@ Partial Class Form1
         tspTree.PerformLayout()
         tspGrid.ResumeLayout(False)
         tspGrid.PerformLayout()
+        SplitContainer1.Panel1.ResumeLayout(False)
+        SplitContainer1.Panel2.ResumeLayout(False)
+        CType(SplitContainer1, ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer1.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -203,4 +250,7 @@ Partial Class Form1
     Friend WithEvents btnSave As ToolStripButton
     Friend WithEvents btnDELETE As ToolStripButton
     Friend WithEvents TreeDEL As ToolStripButton
+    Friend WithEvents btnEdit As ToolStripButton
+    Friend WithEvents clbCol As CheckedListBox
+    Friend WithEvents SplitContainer1 As SplitContainer
 End Class

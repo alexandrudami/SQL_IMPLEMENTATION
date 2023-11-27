@@ -116,16 +116,41 @@ Public Class Form1
     Private Sub trv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles trv.AfterSelect
 
         Dim dt As New DataTree
-
         dt.DisplayData(trv, dgv)
+        Dim list As New FormBuild
+
+        list.BuildList(dgv, clbCol)
+    End Sub
+
+    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+
+
+
+
 
     End Sub
+
+
 End Class
 
 Public Class FormBuild
 
     Dim frmInputDatabase As New Form
     Public frmSelfBuild As New Form
+
+
+    Public Sub BuildList(ByRef dgv As DataGridView, ByRef clb As CheckedListBox)
+
+
+        clb.Items.Clear()
+
+        For Each column As DataGridViewColumn In dgv.Columns
+            clb.Items.Add(column.Name, True)
+        Next
+
+
+
+    End Sub
 
     Public Sub SelfBuildForm(ByVal arr As ArrayList)
 
@@ -285,14 +310,14 @@ Public Class DataTree
         trv.Nodes.Clear()
         Dim nodeHome As New TreeNode
         nodeHome.Text = "Home"
-        nodeHome.Name = 1
+        nodeHome.Name = 0
         trv.Nodes.Add(nodeHome)
         Dim j As Integer = 0
         For i = 0 To LevelMax
             For Each row As DataRow In dtTree.Select("LevelNod=" & i, "")
                 data.Add(row("id"), row("codSQL"))
                 Dim node As New TreeNode With {
-                    .Text = row("DDenumire"),
+                    .Text = row("Denumire"),
                     .Name = row("id"),
                     .Tag = data
                 }
@@ -326,5 +351,38 @@ Public Class DataTree
     Private Sub addNode()
 
     End Sub
+
+End Class
+
+
+
+
+Public Class EditDGV
+
+
+    Public Sub CollectData(ByRef collection As Dictionary(Of Integer, String), ByRef clb As CheckedListBox)
+
+
+        Dim dt As New DataTable
+
+
+        For Each coll As CheckedListBox.CheckedItemCollection In clb.CheckedItems
+
+            collection.Add()
+
+        Next
+
+
+    End Sub
+
+
+    Public Sub dynamicSQL(ByRef collection As Dictionary(Of Integer, String))
+
+
+
+
+
+    End Sub
+
 
 End Class
