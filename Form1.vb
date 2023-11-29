@@ -312,7 +312,6 @@ Public Class DataTree
         nodeHome.Text = "Home"
         nodeHome.Name = 0
         trv.Nodes.Add(nodeHome)
-        Dim j As Integer = 0
         For i = 0 To LevelMax
             For Each row As DataRow In dtTree.Select("LevelNod=" & i, "")
                 data.Add(row("id"), row("codSQL"))
@@ -321,7 +320,7 @@ Public Class DataTree
                     .Name = row("id"),
                     .Tag = data
                 }
-                j = j + 1
+
                 trv.Nodes.Find(row("idp"), True)(0).Nodes.Add(node)
 
             Next
@@ -348,41 +347,6 @@ Public Class DataTree
 
     End Sub
 
-    Private Sub addNode()
-
-    End Sub
-
 End Class
 
 
-
-
-Public Class EditDGV
-
-
-    Public Sub CollectData(ByRef collection As Dictionary(Of Integer, String), ByRef clb As CheckedListBox)
-
-
-        Dim dt As New DataTable
-
-
-        For Each coll As CheckedListBox.CheckedItemCollection In clb.CheckedItems
-
-            collection.Add()
-
-        Next
-
-
-    End Sub
-
-
-    Public Sub dynamicSQL(ByRef collection As Dictionary(Of Integer, String))
-
-
-
-
-
-    End Sub
-
-
-End Class
