@@ -25,7 +25,6 @@ Partial Class Form2
         SplitContainer1 = New SplitContainer()
         lstTables = New ListBox()
         SplitContainer2 = New SplitContainer()
-        ColorDialog1 = New ColorDialog()
         CType(SplitContainer1, ComponentModel.ISupportInitialize).BeginInit()
         SplitContainer1.Panel1.SuspendLayout()
         SplitContainer1.Panel2.SuspendLayout()
@@ -91,5 +90,4 @@ Partial Class Form2
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents lstTables As ListBox
     Friend WithEvents SplitContainer2 As SplitContainer
-    Friend WithEvents ColorDialog1 As ColorDialog
 End Class
