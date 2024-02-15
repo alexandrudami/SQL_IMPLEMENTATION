@@ -31,13 +31,14 @@ Partial Class Form1
         tspTree = New ToolStrip()
         TreeADD = New ToolStripButton()
         TreeDEL = New ToolStripButton()
+        SplitContainer1 = New SplitContainer()
         clbCol = New CheckedListBox()
         tspGrid = New ToolStrip()
         btnADD = New ToolStripButton()
         btnSave = New ToolStripButton()
         btnDELETE = New ToolStripButton()
         btnEdit = New ToolStripButton()
-        SplitContainer1 = New SplitContainer()
+        Panel1 = New Panel()
         CType(dgv, ComponentModel.ISupportInitialize).BeginInit()
         mst.SuspendLayout()
         CType(spc, ComponentModel.ISupportInitialize).BeginInit()
@@ -45,11 +46,11 @@ Partial Class Form1
         spc.Panel2.SuspendLayout()
         spc.SuspendLayout()
         tspTree.SuspendLayout()
-        tspGrid.SuspendLayout()
         CType(SplitContainer1, ComponentModel.ISupportInitialize).BeginInit()
         SplitContainer1.Panel1.SuspendLayout()
         SplitContainer1.Panel2.SuspendLayout()
         SplitContainer1.SuspendLayout()
+        tspGrid.SuspendLayout()
         SuspendLayout()
         ' 
         ' dgv
@@ -135,6 +136,24 @@ Partial Class Form1
         TreeDEL.Size = New Size(23, 22)
         TreeDEL.Text = "ToolStripButton2"
         ' 
+        ' SplitContainer1
+        ' 
+        SplitContainer1.Dock = DockStyle.Fill
+        SplitContainer1.Location = New Point(0, 25)
+        SplitContainer1.Name = "SplitContainer1"
+        ' 
+        ' SplitContainer1.Panel1
+        ' 
+        SplitContainer1.Panel1.Controls.Add(Panel1)
+        SplitContainer1.Panel1.Controls.Add(dgv)
+        ' 
+        ' SplitContainer1.Panel2
+        ' 
+        SplitContainer1.Panel2.Controls.Add(clbCol)
+        SplitContainer1.Size = New Size(874, 467)
+        SplitContainer1.SplitterDistance = 684
+        SplitContainer1.TabIndex = 4
+        ' 
         ' clbCol
         ' 
         clbCol.Dock = DockStyle.Fill
@@ -190,22 +209,12 @@ Partial Class Form1
         btnEdit.Size = New Size(23, 22)
         btnEdit.Text = "ToolStripButton1"
         ' 
-        ' SplitContainer1
+        ' Panel1
         ' 
-        SplitContainer1.Dock = DockStyle.Fill
-        SplitContainer1.Location = New Point(0, 25)
-        SplitContainer1.Name = "SplitContainer1"
-        ' 
-        ' SplitContainer1.Panel1
-        ' 
-        SplitContainer1.Panel1.Controls.Add(dgv)
-        ' 
-        ' SplitContainer1.Panel2
-        ' 
-        SplitContainer1.Panel2.Controls.Add(clbCol)
-        SplitContainer1.Size = New Size(874, 467)
-        SplitContainer1.SplitterDistance = 684
-        SplitContainer1.TabIndex = 4
+        Panel1.Location = New Point(141, 136)
+        Panel1.Name = "Panel1"
+        Panel1.Size = New Size(238, 254)
+        Panel1.TabIndex = 1
         ' 
         ' Form1
         ' 
@@ -228,12 +237,12 @@ Partial Class Form1
         spc.ResumeLayout(False)
         tspTree.ResumeLayout(False)
         tspTree.PerformLayout()
-        tspGrid.ResumeLayout(False)
-        tspGrid.PerformLayout()
         SplitContainer1.Panel1.ResumeLayout(False)
         SplitContainer1.Panel2.ResumeLayout(False)
         CType(SplitContainer1, ComponentModel.ISupportInitialize).EndInit()
         SplitContainer1.ResumeLayout(False)
+        tspGrid.ResumeLayout(False)
+        tspGrid.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -253,4 +262,5 @@ Partial Class Form1
     Friend WithEvents btnEdit As ToolStripButton
     Friend WithEvents clbCol As CheckedListBox
     Friend WithEvents SplitContainer1 As SplitContainer
+    Friend WithEvents Panel1 As Panel
 End Class

@@ -24,13 +24,15 @@ Partial Class Form2
     Private Sub InitializeComponent()
         SplitContainer1 = New SplitContainer()
         lstTables = New ListBox()
-        SplitContainer2 = New SplitContainer()
+        displayCont = New SplitContainer()
+        RichTextBox1 = New RichTextBox()
         CType(SplitContainer1, ComponentModel.ISupportInitialize).BeginInit()
         SplitContainer1.Panel1.SuspendLayout()
         SplitContainer1.Panel2.SuspendLayout()
         SplitContainer1.SuspendLayout()
-        CType(SplitContainer2, ComponentModel.ISupportInitialize).BeginInit()
-        SplitContainer2.SuspendLayout()
+        CType(displayCont, ComponentModel.ISupportInitialize).BeginInit()
+        displayCont.Panel2.SuspendLayout()
+        displayCont.SuspendLayout()
         SuspendLayout()
         ' 
         ' SplitContainer1
@@ -45,7 +47,7 @@ Partial Class Form2
         ' 
         ' SplitContainer1.Panel2
         ' 
-        SplitContainer1.Panel2.Controls.Add(SplitContainer2)
+        SplitContainer1.Panel2.Controls.Add(displayCont)
         SplitContainer1.Size = New Size(1038, 584)
         SplitContainer1.SplitterDistance = 346
         SplitContainer1.TabIndex = 0
@@ -60,15 +62,35 @@ Partial Class Form2
         lstTables.Size = New Size(346, 584)
         lstTables.TabIndex = 0
         ' 
-        ' SplitContainer2
+        ' displayCont
         ' 
-        SplitContainer2.Dock = DockStyle.Fill
-        SplitContainer2.Location = New Point(0, 0)
-        SplitContainer2.Name = "SplitContainer2"
-        SplitContainer2.Orientation = Orientation.Horizontal
-        SplitContainer2.Size = New Size(688, 584)
-        SplitContainer2.SplitterDistance = 416
-        SplitContainer2.TabIndex = 0
+        displayCont.Dock = DockStyle.Fill
+        displayCont.Location = New Point(0, 0)
+        displayCont.Name = "displayCont"
+        displayCont.Orientation = Orientation.Horizontal
+        ' 
+        ' displayCont.Panel1
+        ' 
+        displayCont.Panel1.AllowDrop = True
+        displayCont.Panel1.BackColor = SystemColors.ButtonFace
+        ' 
+        ' displayCont.Panel2
+        ' 
+        displayCont.Panel2.BackColor = SystemColors.ButtonHighlight
+        displayCont.Panel2.Controls.Add(RichTextBox1)
+        displayCont.Size = New Size(688, 584)
+        displayCont.SplitterDistance = 416
+        displayCont.TabIndex = 0
+        ' 
+        ' RichTextBox1
+        ' 
+        RichTextBox1.Dock = DockStyle.Fill
+        RichTextBox1.Location = New Point(0, 0)
+        RichTextBox1.Name = "RichTextBox1"
+        RichTextBox1.ReadOnly = True
+        RichTextBox1.Size = New Size(688, 164)
+        RichTextBox1.TabIndex = 0
+        RichTextBox1.Text = ""
         ' 
         ' Form2
         ' 
@@ -78,16 +100,19 @@ Partial Class Form2
         Controls.Add(SplitContainer1)
         Name = "Form2"
         Text = "Form2"
+        WindowState = FormWindowState.Maximized
         SplitContainer1.Panel1.ResumeLayout(False)
         SplitContainer1.Panel2.ResumeLayout(False)
         CType(SplitContainer1, ComponentModel.ISupportInitialize).EndInit()
         SplitContainer1.ResumeLayout(False)
-        CType(SplitContainer2, ComponentModel.ISupportInitialize).EndInit()
-        SplitContainer2.ResumeLayout(False)
+        displayCont.Panel2.ResumeLayout(False)
+        CType(displayCont, ComponentModel.ISupportInitialize).EndInit()
+        displayCont.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
 
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents lstTables As ListBox
-    Friend WithEvents SplitContainer2 As SplitContainer
+    Friend WithEvents displayCont As SplitContainer
+    Friend WithEvents RichTextBox1 As RichTextBox
 End Class
