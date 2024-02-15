@@ -18,7 +18,7 @@ Public Class Form2
     Dim cnn As String = "Data Source=" & My.Settings.txtPC & "\" & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
         & ";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
 
-    Private Sub lstTables_DoubleClick(sender As Object, e As EventArgs) Handles lstTables.DoubleClick
+#Region "=========Proceduri"
 
         Dim schema As New DataTable
 
@@ -62,7 +62,6 @@ Public Class TableList
 
         End Using
 
-        For Each row As DataRow In dtList.Rows
 
             lst.Items.Add(row("name"))
 
