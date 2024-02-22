@@ -7,10 +7,14 @@ Imports Microsoft.VisualBasic.Devices
 Imports System.Text.RegularExpressions
 Imports System.CodeDom
 Imports System.Diagnostics.SymbolStore
+Imports System.Runtime.CompilerServices
 Public Class Form2
 
 #Region "=========Declarations"
+
     Dim myDT_Active As MyTable
+    Dim StrDict As New Dictionary(Of String, myString)
+
 #End Region
 
 #Region "=========Load"
@@ -71,14 +75,32 @@ Public Class Form2
             End If
 
         Next
-        Return txtSelect
+        Return txtSelect & vbCrLf
     End Function
 
     Public Sub displayString()
 
         Dim selectstr As String = SelectString()
 
-        RichTextBox1.Text = selectstr
+        Dim joinstr As String = ""
+
+        For Each item As myString In StrDict.Values
+
+
+            If item.StringFrom IsNot Nothing Then
+                joinstr = joinstr & item.StringFrom & vbCrLf
+            ElseIf item.StringJoin.StartsWith("CROSS") Then
+                joinstr = joinstr & item.StringJoin & vbCrLf
+            ElseIf item.StringJoin.StartsWith("INNER") Then
+                joinstr = joinstr & item.StringJoin & item.StringLink & vbCrLf
+            End If
+
+
+
+        Next
+
+
+        RichTextBox1.Text = selectstr & joinstr
 
     End Sub
 
@@ -93,7 +115,7 @@ Public Class Form2
         Dim lbl As Label = sender(1)(0)
         Dim tb As MyTable = sender(0)
 
-        lbl.DoDragDrop(tb.Name & "." & lbl.Text, DragDropEffects.Link)
+        lbl.DoDragDrop(tb.TableName & "." & lbl.Text, DragDropEffects.Link)
 
     End Sub
     Private Sub lbl_DragEnter(sender As Object, e As DragEventArgs)
@@ -102,6 +124,12 @@ Public Class Form2
     Private Sub lbl_DragDrop(sender As Object, e As DragEventArgs)
         Dim lbl As Label = sender(1)
         Dim tb As MyTable = sender(0)
+
+
+        Dim mystr As myString = StrDict(tb.TableName)
+        mystr.JoinString(2, tb.TableName)
+        mystr.JoinLinkString(e.Data.GetData(DataFormats.Text), tb.TableName & "." & lbl.Text)
+
 
         displayString()
 
@@ -164,10 +192,14 @@ Public Class Form2
             myStr.isPrimary = True
             myStr.FromString(myDT.TableName)
 
+            StrDict.Add(myStr.Name, myStr)
+
         Else
 
             myStr.Name = myDT.TableName
             myStr.JoinString(1, myDT.TableName)
+
+            StrDict.Add(myStr.Name, myStr)
 
         End If
 
