@@ -93,6 +93,9 @@ Public Class MyTable
             newpoint.Y -= posY
             Location = newpoint
         End If
+
+
+
     End Sub
     Public Sub tsp_MouseUp(sender As Object, e As MouseEventArgs) Handles tsp.MouseUp
         isMoving = False

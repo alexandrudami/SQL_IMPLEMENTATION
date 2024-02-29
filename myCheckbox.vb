@@ -33,7 +33,7 @@
 
 
     Private Sub lbl_MouseDown(sender As Object, e As EventArgs) Handles Me.MouseDown, lbl.MouseDown
-        RaiseEvent _MouseDown({lbl, sender}, e)
+        RaiseEvent _MouseDown({lbl, Me}, e)
     End Sub
 
     Private Sub box_CheckedChanged(sender As Object, e As EventArgs) Handles box.CheckedChanged
@@ -41,7 +41,7 @@
     End Sub
 
     Private Sub lbl_DragDrop(sender As Object, e As DragEventArgs) Handles Me.DragDrop, lbl.DragDrop
-        RaiseEvent _DragDrop(sender, e)
+        RaiseEvent _DragDrop({Me, sender}, e)
     End Sub
 
     Private Sub myCheckbox_DragEnter(sender As Object, e As DragEventArgs) Handles Me.DragEnter, lbl.DragEnter

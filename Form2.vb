@@ -109,11 +109,13 @@ Public Class Form2
 
 #Region "=========Events"
 #Region "DragAndDrop_Operation"
-
+    Dim line As New MyDrawings
     Private Sub lbl_MouseDown(sender As Object, e As EventArgs)
 
         Dim lbl As Label = sender(1)(0)
         Dim tb As MyTable = sender(0)
+        Dim box As myCheckbox = sender(1)(1)
+        line.LineStartPoint = New Point(tb.Location.X + tb.Width, tb.Location.Y + box.Location.Y + box.Height / 2)
 
         lbl.DoDragDrop(tb.TableName & "." & lbl.Text, DragDropEffects.Link)
 
@@ -122,14 +124,16 @@ Public Class Form2
         e.Effect = DragDropEffects.Link
     End Sub
     Private Sub lbl_DragDrop(sender As Object, e As DragEventArgs)
-        Dim lbl As Label = sender(1)
+        Dim lbl As Label = sender(1)(1)
         Dim tb As MyTable = sender(0)
-
+        Dim box As myCheckbox = sender(1)(0)
 
         Dim mystr As myString = StrDict(tb.TableName)
         mystr.JoinString(2, tb.TableName)
         mystr.JoinLinkString(e.Data.GetData(DataFormats.Text), tb.TableName & "." & lbl.Text)
+        line.LineEndPoint = New Point(tb.Location.X, tb.Location.Y + box.Location.Y + box.Height / 2)
 
+        line.ConnectLine(displayCont.Panel1)
 
         displayString()
 
@@ -141,7 +145,15 @@ Public Class Form2
     Private Sub displayCont_MouseMove(sender As Object, e As MouseEventArgs) Handles displayCont.Panel1.MouseMove
         If myDT_Active IsNot Nothing Then
             myDT_Active._MouseMove()
+
+            If line IsNot Nothing Then
+                line.ConnectLine(displayCont.Panel1)
+            End If
+
         End If
+
+
+
     End Sub
     Private Sub myDT_MouseDown(sender As Object, e As MouseEventArgs)
         myDT_Active = sender
