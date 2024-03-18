@@ -19,6 +19,7 @@ Public Class Form2
 
 #Region "=========Load"
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
         displayTables(lstTables)
 
     End Sub
@@ -27,15 +28,12 @@ Public Class Form2
 #Region "=========Proceduri"
 
     Private Function isOccupied(mytb As MyTable, x As Integer, y As Integer) As Boolean
-
-
         If mytb.Bounds.Contains(x, y) Then
             Return True
         End If
-
         Return False
-
     End Function
+
     Public Sub displayTables(ByRef lst As ListBox)
 
         Dim comm As New SQLCNN
@@ -48,6 +46,7 @@ Public Class Form2
         Next
 
     End Sub
+
     Public Function SelectString()
 
         Dim txtSelect As String
@@ -105,39 +104,65 @@ Public Class Form2
     End Sub
 
 
+
+
 #End Region
 
 #Region "=========Events"
+
 #Region "DragAndDrop_Operation"
-    Dim line As New MyDrawings
-    Private Sub lbl_MouseDown(sender As Object, e As EventArgs)
 
-        Dim lbl As Label = sender(1)(0)
+    Dim lineInProgress As MyDrawings = Nothing
+    Private Sub lbl_MouseDown(sender As Object, e As MouseEventArgs)
+        Dim line As New MyDrawings(displayCont.Panel1)
+        lineInProgress = line
         Dim tb As MyTable = sender(0)
-        Dim box As myCheckbox = sender(1)(1)
-        line.LineStartPoint = New Point(tb.Location.X + tb.Width, tb.Location.Y + box.Location.Y + box.Height / 2)
 
-        lbl.DoDragDrop(tb.TableName & "." & lbl.Text, DragDropEffects.Link)
+        Dim box As myCheckbox = sender(1)
+
+        tb.myLine = line
+
+        tb.myLine.startCheckbox = box
+
+
+
+        box.DoDragDrop(tb.TableName & "." & box.boxText, DragDropEffects.Link)
 
     End Sub
     Private Sub lbl_DragEnter(sender As Object, e As DragEventArgs)
         e.Effect = DragDropEffects.Link
     End Sub
     Private Sub lbl_DragDrop(sender As Object, e As DragEventArgs)
-        Dim lbl As Label = sender(1)(1)
+
         Dim tb As MyTable = sender(0)
-        Dim box As myCheckbox = sender(1)(0)
+
+        Dim box As myCheckbox = sender(1)
+        tb.myLine = lineInProgress
+
+        tb.myLine.endCheckbox = box
+
 
         Dim mystr As myString = StrDict(tb.TableName)
         mystr.JoinString(2, tb.TableName)
-        mystr.JoinLinkString(e.Data.GetData(DataFormats.Text), tb.TableName & "." & lbl.Text)
-        line.LineEndPoint = New Point(tb.Location.X, tb.Location.Y + box.Location.Y + box.Height / 2)
+        mystr.JoinLinkString(e.Data.GetData(DataFormats.Text), tb.TableName & "." & box.boxText)
 
-        line.ConnectLine(displayCont.Panel1)
+
+        tb.myLine.myDrawLine()
 
         displayString()
 
     End Sub
+
+
+    Private Sub panel_Paint(sender As Object, e As PaintEventArgs) Handles displayCont.Panel1.Paint
+
+        'If myDT_Active IsNot Nothing AndAlso myDT_Active.myLine IsNot Nothing Then
+        '    myDT_Active.myLine.myDrawLine()
+        'End If
+
+
+    End Sub
+
 
 #End Region
 
@@ -146,9 +171,6 @@ Public Class Form2
         If myDT_Active IsNot Nothing Then
             myDT_Active._MouseMove()
 
-            If line IsNot Nothing Then
-                line.ConnectLine(displayCont.Panel1)
-            End If
 
         End If
 
@@ -157,6 +179,9 @@ Public Class Form2
     End Sub
     Private Sub myDT_MouseDown(sender As Object, e As MouseEventArgs)
         myDT_Active = sender
+
+
+
     End Sub
     Private Sub myDT_MouseUp(sender As Object, e As MouseEventArgs)
         myDT_Active = Nothing
@@ -185,7 +210,7 @@ Public Class Form2
         AddHandler myDT.__MouseDown, AddressOf lbl_MouseDown
         AddHandler myDT.__DragDrop, AddressOf lbl_DragDrop
         AddHandler myDT.__CheckChange, AddressOf My_CheckChange
-        AddHandler myDT.MouseDown, AddressOf myDT_MouseDown
+        AddHandler myDT._tbMouseDown, AddressOf myDT_MouseDown
         AddHandler myDT.MouseUp, AddressOf myDT_MouseUp
         AddHandler myDT._Load, AddressOf MyDT_Load
 
@@ -243,12 +268,16 @@ Public Class Form2
 
     End Sub
 
+    Private Sub Form2_Move(sender As Object, e As EventArgs) Handles Me.Move
+
+    End Sub
+
 #End Region
 
 End Class
 
 Public Class SQLCNN
-    Dim cnn As String = "Data Source=" & My.Settings.txtPC & "\" & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
+    Dim cnn As String = "Data Source=" & My.Settings.txtPC & My.Settings.txtSERVER & ";Initial Catalog=" & My.Settings.txtDATABASE _
         & ";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
 
     Dim conn As New SqlConnection

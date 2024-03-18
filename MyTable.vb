@@ -11,6 +11,7 @@ Public Class MyTable
     Friend newpoint As Point
 
     Private _TableName As String = ""
+    Private _myLine As MyDrawings
 
     Public Event __CheckChange(sender As Object, e As EventArgs)
     Public Event __MouseDown(sender As Object, e As MouseEventArgs)
@@ -18,6 +19,9 @@ Public Class MyTable
     Public Event __DragDrop(sender As Object, e As DragEventArgs)
     Public Event _ShadowMouseDown(sender As Object, e As EventArgs)
     Public Event _Load(sender As Object, e As EventArgs)
+    Public Event _tbMouseDown(sender As Object, e As MouseEventArgs)
+
+
     Public Property TableName() As String
 
         Set(ByVal value As String)
@@ -33,11 +37,23 @@ Public Class MyTable
 
 
 
+    Public Property myLine() As MyDrawings
+        Set(ByVal value As MyDrawings)
+            _myLine = value
+        End Set
+        Get
+            Return _myLine
+        End Get
+
+    End Property
+
+
     Public Sub addCheckBox(ByRef dtSchema As DataTable)
 
         For Each row As DataRow In dtSchema.Rows
 
             Dim chkbox = New myCheckbox
+            chkbox.MyTable = Me
             chkbox.ColumnName = row("COLUMN_NAME")
             chkbox.ColumnIndex = row("ORDINAL_POSITION")
             chkbox.Dock = DockStyle.Top
@@ -52,6 +68,7 @@ Public Class MyTable
             AddHandler chkbox._MouseDown, AddressOf chkbox_MouseDown
             AddHandler chkbox._DragDrop, AddressOf chkbox_DragDrop
             AddHandler chkbox._DragEnter, AddressOf chkbox_DragEnter
+
         Next
 
     End Sub
@@ -96,6 +113,11 @@ Public Class MyTable
 
 
 
+
+
+
+
+
     End Sub
     Public Sub tsp_MouseUp(sender As Object, e As MouseEventArgs) Handles tsp.MouseUp
         isMoving = False
@@ -107,5 +129,13 @@ Public Class MyTable
 
     Private Sub MyTable_Load(sender As Object, e As EventArgs) Handles Me.Load
         RaiseEvent _Load(sender, e)
+    End Sub
+
+    Private Sub MyTable_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown, tsp.MouseDown
+        RaiseEvent _tbMouseDown(Me, e)
+    End Sub
+
+    Private Sub MyTable_Move(sender As Object, e As EventArgs) Handles Me.Move
+        If myLine IsNot Nothing Then myLine.myDrawLine()
     End Sub
 End Class

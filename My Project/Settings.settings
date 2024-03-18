@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="txtPC" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ALEX-PC</Value>
+      <Value Profile="(Default)">ALEX</Value>
     </Setting>
     <Setting Name="txtSERVER" Roaming="true" Type="System.String" Scope="User">
-      <Value Profile="(Default)">SQLEXPRESS01</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="txtDATABASE" Type="System.String" Scope="User">
       <Value Profile="(Default)">ISERP165</Value>
