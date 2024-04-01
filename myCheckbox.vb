@@ -60,7 +60,7 @@
     End Sub
 
     Private Sub box_CheckedChanged(sender As Object, e As EventArgs) Handles box.CheckedChanged
-        RaiseEvent _CheckChange(sender, e)
+        RaiseEvent _CheckChange({lbl, sender}, e)
     End Sub
 
     Private Sub lbl_DragDrop(sender As Object, e As DragEventArgs) Handles Me.DragDrop, lbl.DragDrop

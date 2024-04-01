@@ -11,7 +11,8 @@ Public Class MyTable
     Friend newpoint As Point
 
     Private _TableName As String = ""
-    Private _myLine As MyDrawings
+    Private _myLineList As New List(Of MyDrawings)
+    Private LineList As List(Of MyDrawings)
 
     Public Event __CheckChange(sender As Object, e As EventArgs)
     Public Event __MouseDown(sender As Object, e As MouseEventArgs)
@@ -39,10 +40,13 @@ Public Class MyTable
 
     Public Property myLine() As MyDrawings
         Set(ByVal value As MyDrawings)
-            _myLine = value
+            _myLineList.Add(value)
         End Set
         Get
-            Return _myLine
+
+            Return _myLineList
+
+
         End Get
 
     End Property
@@ -136,6 +140,11 @@ Public Class MyTable
     End Sub
 
     Private Sub MyTable_Move(sender As Object, e As EventArgs) Handles Me.Move
-        If myLine IsNot Nothing Then myLine.myDrawLine()
+        If myLine IsNot Nothing Then
+            For Each myLine As MyDrawings In _myLineList
+
+                myLine.myDrawLine()
+            Next
+        End If
     End Sub
 End Class
